@@ -1,6 +1,6 @@
 // Johnson algorithm.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
-// most effective for sparse graphs 
+// most effective for sparse graphs (few edges) O(V^2 * log(V) + |V|*|E|)
 
 // Bellman-Ford (reweight the input graph, eliminate negative edges, negative cycles) 
 // Dijkstra's short path algorithm (for calculating shortest path)
