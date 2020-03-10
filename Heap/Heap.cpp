@@ -2,7 +2,7 @@
 //
 
 #include <iostream>
-#include "MinHeap.h"
+#include "BinomialMinHeap.h"
 #include "database.h"
 
 
@@ -25,12 +25,13 @@ int main()
 	//db.close();
 	db.connect();
 	std::vector<std::pair<std::string, int>> result = db.get_records();
-	MinHeap heap;
+	BinomialMinHeap heap;
 	for (std::pair<std::string, int> record : result) {
-		heap.push(record.second);
+		heap.insert(record.second);
+		std::cout << "Inserted " << record.second;
 	}
 
 	for (int i = 0; i < result.size(); i++) {
-		std::cout << heap.poll() << " ";
+		std::cout << heap.extractMin() << " ";
 	}
 }
