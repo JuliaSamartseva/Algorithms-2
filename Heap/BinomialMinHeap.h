@@ -1,6 +1,9 @@
 #pragma once
 #include <cstddef>
 #include <climits>
+#include <list>
+using std::list;
+
 
 struct Node {
 	Node* parent;
@@ -16,19 +19,24 @@ struct Node {
 		child = NULL;
 		sibling = NULL;
 	}
+
+	void insertTree(Node* x) {
+		sibling = x;
+	}
 };
 
 
 class BinomialMinHeap
 {
 private:
-	Node* head = NULL;
+	std::list<Node*> head;
 	int size = 0;
 
-	void swap(Node* x, Node* y) {
-		Node* temp = x;
-		x = y;
-		y = temp;
+	void swap(Node* x, Node* y)
+	{
+		Node temp = *x;
+		*x = *y;
+		*y = temp;
 	}
 
 	Node* mergeTree(Node* x, Node* y) { //merging binomial trees
@@ -41,85 +49,68 @@ private:
 		return x;
 	}
 
-	void insertTree(Node* x, Node* y) {
-		if (x != NULL) {
-			x->sibling = y;
-			x = x->sibling;
-		}
-		else x = y;
-	}
-
 	void rearrangeHeap() {
 		if (size <= 1) return;
 		BinomialMinHeap result;
-		Node* iterator1 = head;
-		Node* iterator2 = head;
-		Node* iterator3 = head;
+		list<Node*>::iterator iterator1, iterator2, iterator3;
+		iterator1 = iterator2 = iterator3 = head.begin();
 
 		if (size == 2) {
-			if (head->degree < head->sibling->degree) return;
-			else if (head->degree == head->sibling->degree) {
-				head = mergeTree(head, head->sibling);
-				head->sibling = NULL;
-				size = 1;
-			}
-			else {
-				Node* temp = head;
-				head = head->sibling;
-				head->sibling = temp;
-			}
-			return;
+			iterator2 = iterator1;
+			iterator2++;
+			iterator3 = head.end();
 		}
 		else {
-			iterator2 = iterator1->sibling;
-			iterator3 = iterator2->sibling;
+			iterator2++;
+			iterator3 = iterator2;
+			iterator3++;
 		}
-		while (iterator1->sibling != NULL) {
-			if (iterator2->sibling == NULL) iterator1 = iterator1->sibling;
-			else if (iterator1->degree < iterator2->degree) {
-				iterator1 = iterator1->sibling;
-				iterator2 = iterator2->sibling;
-				if (iterator3->sibling != NULL) iterator3 = iterator3->sibling;
+
+		while (iterator1 != head.end()) {
+			if (iterator2 == head.end()) iterator1++;
+			else if ((*iterator1)->degree < (*iterator2)->degree) {
+				iterator1++;
+				iterator2++;
+				if (iterator3 != head.end()) iterator3++;
 			}
-			else if (iterator3->sibling != NULL && iterator1->degree == iterator2->degree && iterator3->degree == iterator1->degree) {
-				iterator1 = iterator1->sibling;
-				iterator2 = iterator2->sibling;
-				iterator3 = iterator3->sibling;
+			else if (iterator3 != head.end() && 
+				(*iterator1)->degree == (*iterator2)->degree && 
+				(*iterator3)->degree == (*iterator1)->degree) {
+				iterator1++;
+				iterator2++;
+				iterator3++;
 			}
-			else if (iterator1->degree == iterator2->degree) {
-				iterator1 = mergeTree(iterator1, iterator2);
-				Node* temp = iterator2;
-				iterator2 = iterator2->sibling;
-				delete temp;
+			else if ((*iterator1)->degree == (*iterator2)->degree) {
+				*iterator1 = mergeTree(*iterator1, *iterator2);
+				iterator2 = head.erase(iterator2);
 				size--;
-				if (iterator3->sibling != NULL) iterator3 = iterator3->sibling;
+				if (iterator3 != head.end()) iterator3++;
 			}
 		}
 	}
 
-	BinomialMinHeap unionHeap(BinomialMinHeap& H1, BinomialMinHeap& H2) {
-		BinomialMinHeap result;
-		Node* iterator_H1 = H1.head;
-		Node* iterator_H2 = H2.head;
-		Node* iterator_result = result.head;
-		while (iterator_H1 != NULL && iterator_H2 != NULL) {
-			if (iterator_H1->degree <= iterator_H2->degree) {
-				insertTree(iterator_result, iterator_H1);
-				iterator_H1 = iterator_H1->sibling;
+	list<Node*>unionHeap(list<Node*> H1, list<Node*> H2) {
+		list<Node*>::iterator iterator_H1 = H1.begin();
+		list<Node*>::iterator iterator_H2 = H2.begin();
+		list<Node*> result;
+		while (iterator_H1 != H1.end() && iterator_H2 != H2.end()) {
+			if ((*iterator_H1)->degree <= (*iterator_H2)->degree) {
+				result.push_back(*iterator_H1);
+				iterator_H1++;
 			}
 			else {
-				insertTree(iterator_result, iterator_H2);
-				iterator_H2 = iterator_H2->sibling;
+				result.push_back(*iterator_H2);
+				iterator_H2++;
 			}
 		}
 
-		while (iterator_H1 != NULL) {
-			insertTree(iterator_result, iterator_H1);
-			iterator_H1 = iterator_H1->sibling;
+		while (iterator_H1 != H1.end()) {
+			result.push_back(*iterator_H1);
+			iterator_H1++;
 		}
-		while (iterator_H2 != NULL) {
-			insertTree(iterator_result, iterator_H2);
-			iterator_H2 = iterator_H2->sibling;
+		while (iterator_H2 != H2.end()) {
+			result.push_back(*iterator_H2);
+			iterator_H2++;
 		}
 		return result;
 	}
@@ -146,40 +137,59 @@ private:
 
 
 public:
+
 	void insert(int key) {
 		BinomialMinHeap H1;
-		size++;
 		Node* x = new Node(key, 0);
-		x->parent = NULL;
-		x->child = NULL;
-		H1.head = x;
-		BinomialMinHeap result = unionHeap(*this, H1);
+		list<Node*> temp;
+		temp.push_back(x);
+		head = unionHeap(head, temp);
 		rearrangeHeap();
 	}
 
 	Node* getMin() {
-		Node* y = NULL;
-		Node* x = head;
+		list<Node*>::iterator it = head.begin();
+		Node* temp = *it;
 		int min = INT_MAX;
-		while (x != NULL) {
-			if (x->data < min) {
-				min = x->data;
-				y = x;
-			}
-			x = x->sibling;
+		while (it != head.end()) {
+			if ((*it)->data < temp->data) temp = *it;
+			it++;
 		}
-		return y;
+		return temp;
+	}
+
+	list<Node*> remove(Node* tree) {
+		list<Node*> heap;
+		Node* temp = tree->child;
+		Node* lo;
+
+		// making a binomial heap from Binomial Tree 
+		while (temp)
+		{
+			lo = temp;
+			temp = temp->sibling;
+			lo->sibling = NULL;
+			heap.push_front(lo);
+		}
+		return heap;
 	}
 
 	int extractMin() {
 		size--;
 		Node* x = getMin();
-		Node* temp = x->child;
-		BinomialMinHeap H1;
-		H1.head = reverseLinkedList(temp);
-		unionHeap(*this, H1); //maybe mistake
-		return x->data;
-		delete[] x;
+		list<Node*>::iterator it;
+		list<Node*> result;
+		Node* temp = getMin();
+		int min = temp->data;
+		it = head.begin();
+		while (it != head.end()) {
+			if (*it != temp) result.push_back(*it);
+			it++;
+		}
+		list<Node*> lo = remove(temp);
+		head = unionHeap(result, lo);
+		rearrangeHeap();
+		return min;
 	}
 
 	void decreaseKey(Node* x, int k) {
