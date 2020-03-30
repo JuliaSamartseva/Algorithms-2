@@ -7,7 +7,8 @@ void BinomialMinHeap::swap(Node* x, Node* y)
 	*y = temp;
 }
 
-Node* BinomialMinHeap::mergeTree(Node* x, Node* y) { //merging binomial trees
+//merging binomial trees, the root is the smallest element
+Node* BinomialMinHeap::mergeTree(Node* x, Node* y) { 
 	if (x->data > y->data)
 		swap(x, y);
 	y->parent = x;
@@ -17,6 +18,8 @@ Node* BinomialMinHeap::mergeTree(Node* x, Node* y) { //merging binomial trees
 	return x;
 }
 
+//if two binomial heaps have the same degree -> they should be merged by using function mergeTree
+//if when iterating three trees have the same degrees -> we should move them
 void BinomialMinHeap::rearrangeHeap() {
 	if (size <= 1) return;
 	BinomialMinHeap result;
@@ -57,6 +60,7 @@ void BinomialMinHeap::rearrangeHeap() {
 	}
 }
 
+//just adding all of the trees to the result heap in the increasing order of the degrees
 list<Node*> BinomialMinHeap::unionHeap(list<Node*> H1, list<Node*> H2) {
 	list<Node*>::iterator iterator_H1 = H1.begin();
 	list<Node*>::iterator iterator_H2 = H2.begin();
@@ -119,6 +123,8 @@ list<Node*> BinomialMinHeap::remove(Node* tree) {
 	return heap;
 }
 
+//make new heap out of new key
+//then union these two heaps
 void BinomialMinHeap::insert(int key) {
 	BinomialMinHeap H1;
 	Node* x = new Node(key, 0);
@@ -128,6 +134,8 @@ void BinomialMinHeap::insert(int key) {
 	rearrangeHeap();
 }
 
+//O(log N) (because at most log N trees)
+//just iterate through the original list of the Nodes
 Node* BinomialMinHeap::getMin() {
 	list<Node*>::iterator it = head.begin();
 	Node* temp = *it;
@@ -139,13 +147,15 @@ Node* BinomialMinHeap::getMin() {
 	return temp;
 }
 
+//O(log N)
+//deleting the node in the binomial heap that has the minimum key
+//this makes original heap divide into another 2 heaps, so they're merged by union function
 int BinomialMinHeap::extractMin() {
 	size--;
-	Node* x = getMin();
-	list<Node*>::iterator it;
 	list<Node*> result;
 	Node* temp = getMin();
 	int min = temp->data;
+	list<Node*>::iterator it;
 	it = head.begin();
 	while (it != head.end()) {
 		if (*it != temp) result.push_back(*it);
@@ -169,6 +179,7 @@ void BinomialMinHeap::decreaseKey(Node* x, int k) {
 	}
 }
 
+//O(log N)
 void BinomialMinHeap::deleteKey(Node* x) {
 	decreaseKey(x, INT_MIN);
 	extractMin();
