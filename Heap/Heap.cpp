@@ -10,6 +10,9 @@ int main()
 {
 	database db;
 	db.create();
+
+	// uncomment to add the queries into the SQLite database
+
 	/*db.add("Google Drive", 50);
 	db.add("Google Forms", 31);
 	db.add("Google Docs", 35);
@@ -28,7 +31,8 @@ int main()
 	std::vector<std::pair<std::string, int>> result = db.get_records();
 	BinomialMinHeap heap;
 
-	std::cout << "\nInserted \n";
+	std::cout << "\n\n~~~First test~~~ Adding queries from the database";
+	std::cout << "\nInserted: \n";
 	for (int i = 0; i < result.size(); i++) {
 		std::pair<std::string, int> record = result[i];
 		heap.insert(record.second);
@@ -39,4 +43,20 @@ int main()
 	for (int i = 0; i < result.size(); i++) {
 		std::cout << heap.extractMin() << " ";
 	}
+
+	std::cout << "\n\n~~~Second test~~~ Adding 200 random integers";
+	BinomialMinHeap heap2;
+	std::cout << "\nInserted: \n";
+	for (int i = 0; i < 200; i++) {
+		int j = rand() % 200;
+		heap2.insert(j);
+		std::cout << j << " ";
+	}
+	std::cout << "\nResult in increasing order \n";
+	for (int i = 0; i < 200; i++) {
+		std::cout << heap2.extractMin() << " ";
+	}
+
+	/* You can also delete/decrease keys by passing the Node to the functions */
+
 }

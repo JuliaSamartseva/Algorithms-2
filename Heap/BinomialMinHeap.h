@@ -135,6 +135,22 @@ private:
 		y->data = temp;
 	}
 
+	list<Node*> remove(Node* tree) {
+		list<Node*> heap;
+		Node* temp = tree->child;
+		Node* lo;
+
+		// making a binomial heap from Binomial Tree 
+		while (temp)
+		{
+			lo = temp;
+			temp = temp->sibling;
+			lo->sibling = NULL;
+			heap.push_front(lo);
+		}
+		return heap;
+	}
+
 
 public:
 
@@ -156,22 +172,6 @@ public:
 			it++;
 		}
 		return temp;
-	}
-
-	list<Node*> remove(Node* tree) {
-		list<Node*> heap;
-		Node* temp = tree->child;
-		Node* lo;
-
-		// making a binomial heap from Binomial Tree 
-		while (temp)
-		{
-			lo = temp;
-			temp = temp->sibling;
-			lo->sibling = NULL;
-			heap.push_front(lo);
-		}
-		return heap;
 	}
 
 	int extractMin() {
