@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "BinomialMinHeap.h"
+#include "FibonacciMinHeap.h"
 #include "database.h"
 
 
@@ -29,7 +30,7 @@ int main()
 	db.connect();
 
 	std::vector<std::pair<std::string, int>> result = db.get_records();
-	BinomialMinHeap heap;
+	/*BinomialMinHeap heap;
 
 	std::cout << "\n\n~~~First test~~~ Adding queries from the database";
 	std::cout << "\nInserted: \n";
@@ -55,8 +56,22 @@ int main()
 	std::cout << "\nResult in increasing order \n";
 	for (int i = 0; i < 200; i++) {
 		std::cout << heap2.extractMin() << " ";
-	}
+	}*/
 
 	/* You can also delete/decrease keys by passing the Node to the functions */
 
+	std::cout << "\n\n~~~First test Fibonacci~~~ Adding queries from the database";
+
+	FibonacciMinHeap heap3;
+	std::cout << "\nInserted: \n";
+	for (int i = 0; i < result.size(); i++) {
+		std::pair<std::string, int> record = result[i];
+		heap3.insert(record.second);
+		std::cout << record.second << " ";
+	}
+
+	std::cout << "\nResult in increasing order \n";
+	for (int i = 0; i < result.size(); i++) {
+		std::cout << heap3.extractMin() << " ";
+	}
 }
