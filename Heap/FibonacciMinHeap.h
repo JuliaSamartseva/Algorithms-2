@@ -27,7 +27,7 @@ struct ListNode {
 class FibonacciMinHeap
 {
 private:
-	ListNode* head;
+	ListNode* head = NULL;
 
 	void swap(ListNode* x, ListNode* y) {
 		ListNode temp = *x;
@@ -87,13 +87,18 @@ public:
 
 	int extractMin() {
 		ListNode* x = head->child; 
-		do {
-			x->marked = false;
-			x->parent = NULL;
-			x = x->next;
-		} while (x != head); // because it's a circular linked list
+		if (x) {
+			do {
+				x->marked = false;
+				x->parent = NULL;
+				x = x->next;
+			} while (x != head->child); // because it's a circular linked list
+		}
+		
+		ListNode* minimum = head; //minimum 
+		int min_value = head->data;
 
-		x = head; //minimum 
+		x = head; 
 
 		if (x->next == x) { //if the size is 1
 			x = x->child;
@@ -103,50 +108,56 @@ public:
 			x->prev->next = x->next;
 			x = unionHeap(x->next, x->child); //add children to the root list
 		}
-
+		
 		ListNode* trees[64] = { NULL };
-
-		while (true) {
-			if (trees[x->degree] != NULL) {
-				ListNode* t = trees[x->degree];
-				if (t == x) break;
-				trees[x->degree] = NULL;
-				if (x->data < t->data) {
-					t->prev->next = t->next;
-					t->next->prev = t->prev;
-					addChild(x, t);
-				}
-				else {
-					t->prev->next = t->next;
-					t->next->prev = t->prev;
-					if (x->next == x) {
-						t->next = t->prev = t;
-						addChild(t, x);
-						x = t;
+		if (x != NULL) {
+			while (true) {
+				if (trees[x->degree] != NULL) {
+					ListNode* t = trees[x->degree];
+					if (t == x) break;
+					trees[x->degree] = NULL;
+					if (x->data < t->data) {
+						t->prev->next = t->next;
+						t->next->prev = t->prev;
+						addChild(x, t);
 					}
 					else {
-						x->prev->next = t;
-						x->next->prev = t;
-						t->next = x->next;
-						t->prev = x->prev;
-						addChild(t, x);
-						x = t;
+						t->prev->next = t->next;
+						t->next->prev = t->prev;
+						if (x->next == x) {
+							t->next = t->prev = t;
+							addChild(t, x);
+							x = t;
+						}
+						else {
+							x->prev->next = t;
+							x->next->prev = t;
+							t->next = x->next;
+							t->prev = x->prev;
+							addChild(t, x);
+							x = t;
+						}
 					}
+					continue;
 				}
-				continue;
+				else {
+					trees[x->degree] = x;
+				}
+				x = x->next;
 			}
-			else {
-				trees[x->degree] = x;
-			}
-			x = x->next;
+
+			ListNode* min = x;
+			ListNode* start = x;
+			do {
+				if (x->data < min->data) min = x;
+				x = x->next;
+			} while (x != start);
+
 		}
-		ListNode* min = x;
-		ListNode* start = x;
-		do {
-			if (x->data < min->data) min = x;
-			x = x->next;
-		} while (x != start);
-		return min->data;
+	
+		head = x;
+		delete minimum; //deleting the node
+		return min_value;
 	}
 
 	void decreaseKey(ListNode* x, int k) {

@@ -30,35 +30,35 @@ int main()
 	db.connect();
 
 	std::vector<std::pair<std::string, int>> result = db.get_records();
-	/*BinomialMinHeap heap;
+	//BinomialMinHeap heap;
 
-	std::cout << "\n\n~~~First test~~~ Adding queries from the database";
-	std::cout << "\nInserted: \n";
-	for (int i = 0; i < result.size(); i++) {
-		std::pair<std::string, int> record = result[i];
-		heap.insert(record.second);
-		std::cout << record.second << " "; 
-	}
+	//std::cout << "\n\n~~~First test~~~ Adding queries from the database";
+	//std::cout << "\nInserted: \n";
+	//for (int i = 0; i < result.size(); i++) {
+	//	std::pair<std::string, int> record = result[i];
+	//	heap.insert(record.second);
+	//	std::cout << record.second << " "; 
+	//}
 
-	std::cout << "\nResult in increasing order \n";
-	for (int i = 0; i < result.size(); i++) {
-		std::cout << heap.extractMin() << " ";
-	}
+	//std::cout << "\nResult in increasing order \n";
+	//for (int i = 0; i < result.size(); i++) {
+	//	std::cout << heap.extractMin() << " ";
+	//}
 
-	std::cout << "\n\n~~~Second test~~~ Adding 200 random integers";
-	BinomialMinHeap heap2;
-	std::cout << "\nInserted: \n";
-	for (int i = 0; i < 200; i++) {
-		int j = rand() % 200;
-		heap2.insert(j);
-		std::cout << j << " ";
-	}
-	std::cout << "\nResult in increasing order \n";
-	for (int i = 0; i < 200; i++) {
-		std::cout << heap2.extractMin() << " ";
-	}*/
+	//std::cout << "\n\n~~~Second test~~~ Adding 200 random integers";
+	//BinomialMinHeap heap2;
+	//std::cout << "\nInserted: \n";
+	//for (int i = 0; i < 200; i++) {
+	//	int j = rand() % 200;
+	//	heap2.insert(j);
+	//	std::cout << j << " ";
+	//}
+	//std::cout << "\nResult in increasing order \n";
+	//for (int i = 0; i < 200; i++) {
+	//	std::cout << heap2.extractMin() << " ";
+	//}
 
-	/* You can also delete/decrease keys by passing the Node to the functions */
+	///* You can also delete/decrease keys by passing the Node to the functions */
 
 	std::cout << "\n\n~~~First test Fibonacci~~~ Adding queries from the database";
 
@@ -74,4 +74,11 @@ int main()
 	for (int i = 0; i < result.size(); i++) {
 		std::cout << heap3.extractMin() << " ";
 	}
+
+	//std::cout << "\n\n~~~First test Fibonacci~~~ Adding queries from the database";
+
+	//FibonacciMinHeap heap3;
+	//heap3.insert(1);
+	//heap3.insert(2);
+	//std::cout << heap3.extractMin() << heap3.extractMin();
 }
