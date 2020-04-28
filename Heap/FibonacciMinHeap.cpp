@@ -11,12 +11,6 @@ ListNode::ListNode(int data, int degree) {
 	marked = false;
 }
 
-void FibonacciMinHeap::swap(ListNode* x, ListNode* y) {
-	ListNode temp = *x;
-	*x = *y;
-	*y = temp;
-}
-
 // O(1)
 //just merge two doubly linked lists together
 
@@ -92,13 +86,16 @@ int FibonacciMinHeap::extractMin() {
 		x = unionHeap(x->next, x->child); //add children to the root list
 	}
 
+	//auxilary array i = degree + pointers to the heads
 	ListNode* trees[64] = { NULL };
 	if (x != NULL) {
 		while (true) {
-			if (trees[x->degree] != NULL) {
+			//if there are two nodes with the same degree
+			if (trees[x->degree] != NULL) { 
 				ListNode* t = trees[x->degree];
 				if (t == x) break;
 				trees[x->degree] = NULL;
+				//link the nodes together (using doubly linked list conventions)
 				if (x->data < t->data) {
 					t->prev->next = t->next;
 					t->next->prev = t->prev;
@@ -151,6 +148,7 @@ void FibonacciMinHeap::decreaseKey(ListNode* x, int k) {
 			head = cut(head, x);
 			ListNode* parent = x->parent;
 			x->parent = NULL;
+			//cascading cut if the parent was marked
 			while (parent != NULL && parent->marked) {
 				head = cut(head, parent);
 				x = parent;

@@ -66,6 +66,7 @@ public:
 	//this makes original heap divide into another 2 heaps, so they're merged by union function
 	int extractMin();
 
+	//O(log N)
 	void decreaseKey(Node* x, int k);
 
 	//O(log N)
