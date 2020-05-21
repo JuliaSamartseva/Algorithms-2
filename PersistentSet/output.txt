@@ -1,0 +1,18 @@
+digraph BST {
+    node [fontname="Arial"];
+    node7 [style=filled, fillcolor=grey, shape=record, label="{5}"]    node2 [style=filled, fillcolor=grey, shape=record, label="{2}"]    node7 -> node2;
+    node2 [style=filled, fillcolor=grey, shape=record, label="{2}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node2 -> node0;
+    node2 [style=filled, fillcolor=grey, shape=record, label="{2}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node2 -> node0;
+    node7 [style=filled, fillcolor=grey, shape=record, label="{5}"]    node8 [style=filled, fillcolor=red, shape=record, label="{5}"]    node7 -> node8;
+    node8 [style=filled, fillcolor=red, shape=record, label="{5}"]    node4 [style=filled, fillcolor=grey, shape=record, label="{5}"]    node8 -> node4;
+    node4 [style=filled, fillcolor=grey, shape=record, label="{5}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node4 -> node0;
+    node4 [style=filled, fillcolor=grey, shape=record, label="{5}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node4 -> node0;
+    node8 [style=filled, fillcolor=red, shape=record, label="{5}"]    node9 [style=filled, fillcolor=grey, shape=record, label="{7}"]    node8 -> node9;
+    node9 [style=filled, fillcolor=grey, shape=record, label="{7}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node9 -> node0;
+    node9 [style=filled, fillcolor=grey, shape=record, label="{7}"]    node10 [style=filled, fillcolor=red, shape=record, label="{10}"]    node9 -> node10;
+    node10 [style=filled, fillcolor=red, shape=record, label="{10}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node10 -> node0;
+    node10 [style=filled, fillcolor=red, shape=record, label="{10}"]    node11 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node10 -> node11;
+    node11 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node5 [style=filled, fillcolor=red, shape=record, label="{12}"]    node11 -> node5;
+    node5 [style=filled, fillcolor=red, shape=record, label="{12}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node5 -> node0;
+    node5 [style=filled, fillcolor=red, shape=record, label="{12}"]    node0 [style=filled, fillcolor=grey, shape=record, label="{0}"]    node5 -> node0;
+}

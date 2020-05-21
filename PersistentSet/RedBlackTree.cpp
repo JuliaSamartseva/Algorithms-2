@@ -6,7 +6,7 @@
 Node* RedBlackTree::getParent(Node* x)
 {
 	if (x == NULL) return NULL; else
-	return x->parent;
+		return x->parent;
 }
 
 Node* RedBlackTree::getGrandParent(Node* x)
@@ -40,8 +40,6 @@ void RedBlackTree::rotateLeft(Node* x)
 	else x->parent->right = y;
 	y->left = x;
 	x->parent = y;
-	y->size = x->size;
-	x->size = x->left->size + x->right->size + 1;
 }
 
 void RedBlackTree::rotateRight(Node* y)
@@ -55,8 +53,6 @@ void RedBlackTree::rotateRight(Node* y)
 	else y->parent->right = x;
 	x->right = y;
 	y->parent = x;
-	x->size = y->size;
-	y->size = y->left->size + y->right->size + 1;
 }
 
 void RedBlackTree::fixViolation(Node* x)
@@ -94,35 +90,18 @@ void RedBlackTree::fixViolation(Node* x)
 	}
 }
 
-Node* RedBlackTree::osSelect_random(Node* x, int i)
-{
-	int r = x->left->size + 1;
-	if (i == r) return x;
-	else if (i < r) return osSelect_random(x->left, i);
-	else return osSelect_random(x->right, i - r);
-}
 
 RedBlackTree::RedBlackTree()
 {
-	nil = new Node(0, 0, 0);
+	nil = new Node(0, 0);
 	root = nil;
 	nil->color = Color::BLACK;
 }
 
-Node* RedBlackTree::osSelect(int i)
+RedBlackTree::RedBlackTree(Node* x, Node* nil)
 {
-	return osSelect_random(root, i);
-}
-
-int RedBlackTree::osRank(Node* x)
-{
-	int r = x->left->size + 1;
-	Node* y = x;
-	while (y != root) {
-		if (y == y->parent->right) r = r + y->parent->left->size + 1;
-		y = y->parent;
-	}
-	return r;
+	this->root = x;
+	this->nil = nil;
 }
 
 void RedBlackTree::insert(int data)
@@ -130,13 +109,13 @@ void RedBlackTree::insert(int data)
 	Node* parent = nil;
 	Node* temp = root;
 	id++;
-	Node* new_node = new Node(data, 1, id);
+	Node* new_node = new Node(data, id);
 	while (temp != nil) {
 		parent = temp;
-		parent->size++;
 		if (new_node->data < temp->data) {
 			temp = temp->left;
-		} else { // temp->data > new_node->data
+		}
+		else { // temp->data > new_node->data
 			temp = temp->right;
 		}
 	}
@@ -150,6 +129,16 @@ void RedBlackTree::insert(int data)
 	new_node->left = nil;
 	new_node->right = nil;
 	fixViolation(new_node);
+}
+
+Node* RedBlackTree::getNil()
+{
+	return nil;
+}
+
+Node* RedBlackTree::getRoot()
+{
+	return root;
 }
 
 void RedBlackTree::drawTree(FILE* f)

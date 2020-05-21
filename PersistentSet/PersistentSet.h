@@ -1,42 +1,31 @@
 #pragma once
 #include <vector>
+#include "RedBlackTree.h"
 
 
-enum class Color {
-	RED,
-	BLACK
-};
-
-struct Node {
-	int data;
-	Node* left, * right, * parent;
-	Color color;
-	int size;
-	int id;
-	Node(int data, int size, int id) {
-		this->data = data;
-		this->size = size;
-		this->id = id;
-		left = NULL;
-		right = NULL;
-		parent = NULL;
-		color = Color::RED;
-	}
-};
 
 class PersistentSet
 {
 private:
-	Node* root;
+	std::vector<RedBlackTree*> roots;
 	Node* nil;
-	int id = 0;
 	Node* getParent(Node* x);
 	Node* getGrandParent(Node* x);
 	Node* getSibling(Node* x);
 	Node* getUncle(Node* x);
-	void rotateLeft(Node* x);
-	void rotateRight(Node* y);
+	void rotateLeft(Node* x, Node* current_root);
+	void rotateRight(Node* y, Node* current_root);
 	void fixViolation(Node* x);
+	Node* copy(Node* x);
+	int id;
 public:
+	PersistentSet(RedBlackTree* tree) {
+		roots.push_back(tree);
+		nil = NULL;
+		nil = tree->getNil();
+		this->id = tree->getId() + 1;
+	}
+	void insert(int data);
+	std::vector<RedBlackTree*> getRoots() { return roots; }
 };
 
