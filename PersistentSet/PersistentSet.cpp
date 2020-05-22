@@ -26,7 +26,32 @@ Node* PersistentSet::getUncle(Node* x)
 	return getSibling(p);
 }
 
-void PersistentSet::rotateLeft(Node* x, Node* current_root)
+Node* PersistentSet::copyUncle(Node* x)
+{
+	bool right = getUncleDirection(x);
+	if (getUncle(x) != nil) {
+		Node* new_uncle = copy(getUncle(x));
+		new_uncle->parent = getGrandParent(x);
+
+		if (right) getGrandParent(x)->right = new_uncle;
+		else getGrandParent(x)->left = new_uncle;
+		return new_uncle;
+	}
+	else return nil;
+}
+
+//true if right, false if left
+bool PersistentSet::getUncleDirection(Node* x)
+{
+	Node* p = getGrandParent(x);
+	if (p != NULL) {
+		if (p->left == x) return true;
+		else return false;
+	}
+	return false;
+}
+
+void PersistentSet::rotateLeft(Node* x, Node*& current_root)
 {
 	Node* y = x->right;
 	x->right = y->left;
@@ -39,7 +64,7 @@ void PersistentSet::rotateLeft(Node* x, Node* current_root)
 	x->parent = y;
 }
 
-void PersistentSet::rotateRight(Node* y, Node* current_root)
+void PersistentSet::rotateRight(Node* y, Node*& current_root)
 {
 	Node* x = y->left;
 	y->left = x->right;
@@ -52,50 +77,58 @@ void PersistentSet::rotateRight(Node* y, Node* current_root)
 	y->parent = x;
 }
 
-void PersistentSet::fixViolation(Node* x)
+void PersistentSet::fixViolation(Node* x, Node*& new_head)
 {
-	//if (getParent(x) == nil) {
-	//	x->color = Color::BLACK;
-	//}
-	//else if (getParent(x)->color == Color::BLACK) {
-	//	return; 
-	//	//the properties are valid
-	//}
-	//else if (getUncle(x) != nil && getUncle(x)->color == Color::RED) {
+	if (getParent(x) == nil) {
+		x->color = Color::BLACK;
+	}
+	else if (getParent(x)->color == Color::BLACK) {
+		return; 
+		//the properties are valid
+	}
+	else if (getUncle(x) != nil && getUncle(x)->color == Color::RED) {
+		getParent(x)->color = Color::BLACK;
+		
+		Node* new_uncle = copyUncle(x);
+		new_uncle->color = Color::BLACK;
+		getGrandParent(x)->color = Color::RED;
 
-	//	getParent(x)->color = Color::BLACK;
-	//	getUncle(x)->color = Color::BLACK;
-	//	getGrandParent(x)->color = Color::RED;
-	//	fixViolation(getGrandParent(x));
-	//}
-	//else {
-	//	Node* p = getParent(x);
-	//	Node* g = getGrandParent(x);
-	//	if (x == p->right && p == g->left) {
-	//		rotateLeft(p);
-	//		x = x->left;
-	//	}
-	//	else if (x == p->left && p == g->right) {
-	//		rotateRight(p);
-	//		x = x->right;
-	//	}
+		fixViolation(getGrandParent(x), new_head);
+	} else {
+		Node* p = getParent(x);
+		Node* g = getGrandParent(x);
+		Node* new_uncle = copyUncle(x);
 
-	//	p = getParent(x);
-	//	g = getGrandParent(x);
-	//	if (x == p->left) rotateRight(g);
-	//	else rotateLeft(g);
-	//	p->color = Color::BLACK;
-	//	g->color = Color::RED;
-	//}
+		if (x == p->right && p == g->left) {
+			rotateLeft(p, new_head);
+			x = x->left;
+		}
+		else if (x == p->left && p == g->right) {
+			rotateRight(p, new_head);
+			x = x->right;
+		}
+
+		p = getParent(x);
+		g = getGrandParent(x); //do we need to copy uncle??
+
+		if (x == p->left) rotateRight(g, new_head);
+		else rotateLeft(g, new_head);
+		p->color = Color::BLACK;
+		g->color = Color::RED;
+	}
 }
 
 Node* PersistentSet::copy(Node* x)
 {
-	Node* new_node = new Node(x->data, x->id, x->color);
-	new_node->left = x->left;
-	new_node->right = x->right;
-	new_node->id = id++;
-	return new_node;
+	if (x != nil) {
+		Node* new_node = new Node(x->data, x->id, x->color);
+		new_node->left = x->left;
+		new_node->right = x->right;
+		new_node->parent = nil;
+		new_node->id = id++;
+		return new_node;
+	}
+	else return nil;
 }
 
 void PersistentSet::insert(int data)
@@ -105,9 +138,9 @@ void PersistentSet::insert(int data)
 	Node* new_head = copy(temp);
 	//id++; TODO change
 
-	int id = 5;
-	Node* new_node = new Node(data, id);
-	roots.push_back(new RedBlackTree(new_head, nil));
+	Node* new_node = new Node(data, id++);
+
+	Node* save = new_head;
 
 	Node* new_parent = nil;
 	while (temp != nil) {
@@ -141,5 +174,6 @@ void PersistentSet::insert(int data)
 	new_node->left = nil;
 	new_node->right = nil;
 
-	//fixViolation(new_node);
+	fixViolation(new_node, save);
+	roots.push_back(new RedBlackTree(save, nil));
 }

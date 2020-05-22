@@ -13,9 +13,11 @@ private:
 	Node* getGrandParent(Node* x);
 	Node* getSibling(Node* x);
 	Node* getUncle(Node* x);
-	void rotateLeft(Node* x, Node* current_root);
-	void rotateRight(Node* y, Node* current_root);
-	void fixViolation(Node* x);
+	Node* copyUncle(Node* x);
+	bool getUncleDirection(Node* x);
+	void rotateLeft(Node* x, Node*& current_root);
+	void rotateRight(Node* y, Node*& current_root);
+	void fixViolation(Node* x, Node*& new_head);
 	Node* copy(Node* x);
 	int id;
 public:
